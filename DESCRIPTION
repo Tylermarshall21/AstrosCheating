@@ -1,0 +1,17 @@
+Package: AstrosCheating
+Title: Analyzing the Houston Astros Cheating Scandal
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Tyler",
+           family = "Marshall",
+           role = c("aut", "cre"),
+           email = "tmarshall21@amherst.edu",
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: This package provides wrangled data regarding the Houston Astros cheating scandal that involved banging on trash cans during the 2017 MLB season. Analysis is included that identifieswhen the cheating scandal began, the level of involvement for each player, the most commoninnings when cheating occurred, as well as the types of pitches that they banged on trash cans for. 
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Depends: 
+    R (>= 2.10)
