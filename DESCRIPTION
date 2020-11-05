@@ -5,9 +5,8 @@ Authors@R:
     person(given = "Tyler",
            family = "Marshall",
            role = c("aut", "cre"),
-           email = "tmarshall21@amherst.edu",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: This package provides wrangled data regarding the Houston Astros cheating scandal that involved banging on trash cans during the 2017 MLB season. Analysis is included that identifieswhen the cheating scandal began, the level of involvement for each player, the most commoninnings when cheating occurred, as well as the types of pitches that they banged on trash cans for. 
+           email = "tmarshall21@amherst.edu")
+Description: Wrangled data and sample analysis regarding the Houston Astros cheating scandal that involved banging on trash cans during the 2017 MLB season. Analysis is included that identifieswhen the cheating scandal began, the level of involvement for each player, the most commoninnings when cheating occurred, as well as the types of pitches that they banged on trash cans for. 
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
