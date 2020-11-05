@@ -7,7 +7,9 @@
 
 <!-- badges: end -->
 
-The goal of AstrosCheating is to …
+The goal of AstrosCheating is to give insight into the Houston Astros
+2017 cheating scandal by providing data and sample analysis regarding
+the situtation.
 
 ## Installation
 
