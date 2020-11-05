@@ -9,9 +9,9 @@ NULL
 
 #' "Astros Cheating"
 #'
-#' A data set containing golf discs approved by
-#' the Professional Disc Golf Association
-#' as of October, 2020
+#' A data set containing information about
+#' the Houston Astros Cheating Scandal
+#'
 #'
 #' @source \url{http://signstealingscandal.com/files/}
 #' @format A dataframe with 8274 elements
