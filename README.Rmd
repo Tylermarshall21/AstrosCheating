@@ -1,5 +1,6 @@
 ---
 output: github_document
+always_allow_html: true
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -11,6 +12,10 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
+library(tidyverse)
+library(mosaic)
+library(knitr)
+library(kableExtra)
 ```
 
 # AstrosCheating
@@ -34,27 +39,123 @@ And the development version from [GitHub](https://github.com/) with:
 # install.packages("devtools")
 devtools::install_github("Tylermarshall21/AstrosCheating")
 ```
-## Example
+## Example Analysis
 
-This is a basic example which shows you how to solve a common problem:
+This is example analysis that can be done with this package.
 
 ```{r example}
 library(AstrosCheating)
-## basic example code
+
+
+```
+The first thing I would like to look into further is to see when the cheating began for the Astros. By looking at the total number of bangs by game, it should be clear when the Astros really started cheating.
+
+```{r, warning= FALSE, message= FALSE}
+#Find the number of bangs by game
+date_bangs <- AstrosCheating %>%
+  group_by(game_date) %>%
+  filter(has_bangs == "y") %>%
+  mutate(bangs = length(game_date)) %>%
+  arrange(bangs)
+
+#Plot the number of bangs by game
+ggplot(data = date_bangs, aes(x = game_date, y = bangs)) +
+  geom_point() +
+  geom_smooth(se =  FALSE) + 
+  theme_minimal() +
+  labs(title = "Number of Trash Can Bangs by Game", x = "Date of Game",
+       y = "Number of Bangs")
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
 
-```{r cars}
-summary(cars)
+From this, we can see that the Astros did not start employing this cheating strategy until the middle of the season. There were very few bangs on the trash can during April's home games, but it looks like the cheating began at the end of May. On May 28th, 2017, the Astros had 28 bangs on the trash can which seemed to be the real start of their cheating strategy. There is still some variation in the number of bangs per game, but it becomes clear that the Astros were cheating for the rest of the season. However, it is interesting that the Astros seemed to quit cheating in the final two home games of the regular season. The Astros had already clinched the division at this point, so that could explain why they did not feel the need to cheat, but it is definitely interesting that they stopped banging on trash cans in those last two home games.
+
+The next thing I would like to look into further is to see which hitters were most involved
+in the cheating strategy. The Astros did not do this all the time, and hitters were involved to a varying degree, so I'd like to know more about who cheated most often.
+
+
+```{r, warning= FALSE, message= FALSE}
+#Find total number of bangs for each player
+player_bangs <- AstrosCheating %>%
+  group_by(batter) %>%
+  filter(has_bangs == "y") %>%
+  mutate(bangs = length(batter)) %>%
+  select(batter, bangs) %>%
+  distinct() %>%
+  arrange(desc(bangs)) %>%
+  rename(`Batter Name` = batter, `Pitches with Bangs` = bangs)
+#Create table to display results
+knitr::kable(player_bangs) %>%
+  kable_styling(latex_options = c("striped", "HOLD_position"))
+  
 ```
 
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date.
+From this table, we see that Marwin Gonzalez, George Springer, Carlos Beltran, Alex Bregman, and Yuli Gurriel were most frequently the beneficiaries of trash can bangs with all of them having at least 120 pitches where they received a trash can bang before the pitch. While this shows the total number of pitches where a bang occurred, it is a little misleading because hitters that see more pitches would be more likely to have more bangs. I would also like to look at a percentage of pitches where the hitters received a bang to see if the results are similar. 
 
-You can also embed plots, for example:
 
-```{r pressure, echo = FALSE}
-plot(pressure)
+```{r, warning= FALSE, message= FALSE}
+#Find the percentage of bangs for each player
+percentage_bangs <- AstrosCheating %>%
+  group_by(batter) %>%
+  mutate(total_pitches = length(batter)) %>%
+  filter(has_bangs == "y") %>%
+  mutate(total_bangs = length(batter),
+         percent_bangs = round((total_bangs/total_pitches)*100,3)) %>%
+  select(batter, total_bangs, total_pitches, percent_bangs) %>%
+  arrange(desc(percent_bangs)) %>%
+  distinct() %>%
+  rename(`Batter Name` = batter, `Total Bangs` = total_bangs, 
+         `Total Pitches` = total_pitches, 
+         `Percentage of Pitches with Bangs` = percent_bangs)
+#Create table to display results
+knitr::kable(percentage_bangs) %>%
+  kable_styling(latex_options = c("striped", "HOLD_position"))
 ```
 
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub!
+When looking at percentage of pitches where the hitter received a bang, there are some different names at the top of the list. J.D Davis, Tyler White, and Max Stassi had the highest percentage of bangs when they were hitting, but were not everyday players which is why they weren't at the top of the total bangs table created above. Also, none of these three players were on the opening day roster for the Astros which could explain why their percentages were higher than the typical starters. Based on the analysis above, it seems the Astros did not start cheating until May 28th, 2020 which could be part of the reason that the starters have lower percentages compared to some of the backups that were not on the roster to start the season. Another interesting observation from this table is that Tony Kemp was the only player to not receive any bangs which suggests he was not a part of the cheating scandal. Josh Reddick and Jose Altuve who started almost every game for the Astros very rarely received bangs either which indicates they were not very involved in the scandal either. 
+
+
+The next part of the scandal that I would like to explore further is when the banging on trash can occurred during the game. I am interested to see if there are any patterns in the innings in which the Astros did this.
+
+```{r, warning= FALSE, message= FALSE}
+#Number of bangs by inning
+inning_bangs <- AstrosCheating %>%
+  group_by(inning) %>%
+  filter(has_bangs == "y") %>%
+  summarize(n = n())
+#Plot Number of bangs by Inning
+ggplot(data = inning_bangs, aes(x = inning, y = n)) +
+  geom_line() +
+  theme_minimal() +
+  labs(title = "Number of Trash Can Bangs by Inning", x = "Inning",
+       y = "Number of Bangs")
+```
+
+
+From the plot above, we see that the number of bangs are lowest in the tenth and eleven innings. This makes sense given that the game typically ends after nine innings unless the score is tied. Since the Astros were only cheating at home, they also would not bat in the bottom of the ninth unless the score was tied or they were losing, so this explains why there were fewer bangs in the ninth inning compared to the previous eight. The number of bangs is lowering in the first inning which I am a little curious about. It is not exactly clear why there are fewer bangs in the first inning compared to the rest of the game, so I would like to know the reason for this.
+
+Finally, I would like to explore what pitches the Astros banged on the trash can for. Banging on the trash can had to be associated with a specific pitch type to help the hitter, so I will explore what pitches they used banging on the trash can to identify.
+
+
+```{r, warning= FALSE, message= FALSE}
+pitch_bangs <- AstrosCheating %>%
+  group_by(pitch_category) %>%
+  mutate(total_pitches_pitch = length(pitch_category)) %>%
+  filter(has_bangs == "y") %>%
+  mutate(total_bangs_pitch = length(pitch_category),
+         percent_bangs_pitch = round((total_bangs_pitch/total_pitches_pitch)*100,3)) %>%
+  select(pitch_category, total_bangs_pitch, total_pitches_pitch, percent_bangs_pitch) %>%
+  distinct() %>%
+  rename(`Pitch Category` = pitch_category, `Total Bangs by Category` = total_bangs_pitch,
+         `Total Pitches by Category` = total_pitches_pitch,
+         `Percentage of Pitches with Bangs` = percent_bangs_pitch)
+
+#Create table to display results
+knitr::kable(pitch_bangs) %>%
+  kable_styling(latex_options = c("striped", "HOLD_position"))
+```
+
+
+
+From the table above, it is clear that the Astros typically used the trash can to indicate that an offspeed pitch was coming. Breaking balls and changeups are both offspeed pitches and the Astros banged on the trash can for 27.9% and 26.8% of those pitches, respectively. The Astros only banged on the trash can for 4.7% of fastballs, so it seems pretty clear that the Astros were using the trash can to indicate when an offspeed pitch was coming. This means that in the situations where they were cheating, a bang typically indicated an offspeed pitch was coming while no bang would indicate a fastball was coming. While this evidence clearly shows the Astros were cheating during the 2017 season, this analysis also shows that they weren't always doing it. It seems they were only doing it some of the time, but it is not clear how they decided when to do it. Further analysis into their methods could potentially give a better idea of when they were cheating.
+
