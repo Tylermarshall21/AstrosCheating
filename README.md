@@ -1,6 +1,4 @@
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
 # AstrosCheating
 
 ![R-CMD-check](https://github.com/Tylermarshall21/AstrosCheating/workflows/R-CMD-check/badge.svg)
