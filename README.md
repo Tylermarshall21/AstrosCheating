@@ -3,9 +3,7 @@
 
 # AstrosCheating
 
-<!-- badges: start -->
-
-<!-- badges: end -->
+![R-CMD-check](https://github.com/Tylermarshall21/AstrosCheating/workflows/R-CMD-check/badge.svg)
 
 The goal of AstrosCheating is to give insight into the Houston Astros
 2017 cheating scandal by providing data and sample analysis regarding
